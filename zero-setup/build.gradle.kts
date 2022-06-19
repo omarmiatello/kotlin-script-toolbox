@@ -1,4 +1,4 @@
-version = "0.0.1"
+version = "0.0.2"
 description = "Kotlin Script Toolbox - Zero Setup"
 
 plugins {
@@ -11,7 +11,7 @@ plugins {
 dependencies {
     api(moduleCore)
     api("com.google.code.gson:gson:2.9.0")
-    api("io.ktor:ktor-client-okhttp-jvm:2.0.2")
+    api("io.ktor:ktor-client-okhttp:2.0.2")
 }
 
 java {

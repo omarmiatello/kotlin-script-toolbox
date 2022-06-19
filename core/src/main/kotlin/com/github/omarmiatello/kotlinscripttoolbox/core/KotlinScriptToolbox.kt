@@ -13,7 +13,10 @@ fun launchKotlinScriptToolbox(
 ): KotlinScriptToolboxScope {
     if (showDuration) println("🏁 $scriptName - Start!")
     val startTime = System.currentTimeMillis()
-    val scope = KotlinScriptToolboxScope(filepathPrefix)
+    val scope = KotlinScriptToolboxScope(
+        filepathPrefix = filepathPrefix,
+        filepathLocalProperties = filepathLocalProperties,
+    )
     runBlocking { block(scope) }
     if (showDuration) println("🎉 $scriptName - Completed in ${System.currentTimeMillis() - startTime}ms\n")
     return scope
