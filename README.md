@@ -6,14 +6,14 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 
 Add this in your `build.gradle.ktx` file:
 ```kotlin
-// `core` module (Basic utils + kotlinx.coroutines) + Gson + Ktor with OkHttp
-implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.2")
+// `core` module (Basic utils + kotlinx.coroutines) + Gson
+implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.3")
 ```
 
 Alternative, only basic support:
 ```kotlin
 // Basic utils + kotlinx.coroutines
-implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.2")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.3")
 ```
 
 ## How to use (by examples)
