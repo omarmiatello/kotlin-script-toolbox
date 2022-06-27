@@ -7,17 +7,17 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 Add this in your `build.gradle.ktx` file:
 ```kotlin
 // `core` module (Basic utils + kotlinx.coroutines) + Gson
-implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.4")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.5")
 ```
 
 Alternative, only basic support:
 ```kotlin
 // Basic utils + kotlinx.coroutines
-implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.4")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.5")
 // core + telegram client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.0.4")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.0.5")
 // core + twitter client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.0.4")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.0.5")
 ```
 
 ## How to use (by examples)

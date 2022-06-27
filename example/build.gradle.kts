@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation(moduleZeroSetup)
-    // implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.4")
+//    implementation(moduleZeroSetup)
+     implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.5")
 }
 
 java {
