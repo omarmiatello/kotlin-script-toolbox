@@ -27,15 +27,19 @@ class KotlinScriptToolboxScope(
     val filepathPrefix: String = "",
     val filepathLocalProperties: String = "local.properties",
 ) {
+    val cache = Cache()
     val localProperties: Properties? = try {
         Properties().also { it.load(File(filepathLocalProperties).inputStream()) }
     } catch (e: Exception) {
         null
     }
 
-    fun readSystemPropertyOrNull(propertyName: String): String? {
-        return System.getenv(propertyName) ?: localProperties?.getProperty(propertyName)
-    }
+    fun readSystemPropertyOrNull(propertyName: String): String? =
+        System.getenv(propertyName) ?: localProperties?.getProperty(propertyName)
+
+    fun readSystemProperty(propertyName: String): String =
+        readSystemPropertyOrNull(propertyName)
+            ?: error("Property not found: $propertyName")
 
     fun writeText(pathname: String, text: String): Unit =
         File("$filepathPrefix$pathname")
@@ -47,4 +51,25 @@ class KotlinScriptToolboxScope(
             .takeIf { it.exists() }
             ?.readText()
 
+    fun readText(pathname: String): String =
+        readTextOrNull(pathname)
+            ?: error("File not found: $pathname")
+
+}
+
+class CacheKey<T>
+
+class Cache {
+
+    private val map = mutableMapOf<CacheKey<*>, Any>()
+
+    fun <T> getOrNull(key: CacheKey<T>): T? =
+        map[key] as T?
+
+    fun <T : Any> get(key: CacheKey<T>): T =
+        getOrNull(key) ?: error("Key not found: $key")
+
+    fun <T : Any> put(key: CacheKey<T>, value: T) {
+        map[key] = value
+    }
 }

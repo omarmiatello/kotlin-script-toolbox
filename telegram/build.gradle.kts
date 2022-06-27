@@ -1,5 +1,5 @@
-version = "1.0.0"
-description = "This is telegram"
+version = "0.0.4"
+description = "Kotlin Script Toolbox - Telegram Setup"
 
 plugins {
     id("java-library")
@@ -9,17 +9,13 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.bundles.coroutines)
-
-    // Your dependencies
-    // ...
-
-    // Test
-    testImplementation(libs.test.junit)
+    api(moduleCore)
+    api("com.github.omarmiatello.telegram:client-jvm:6.0")
+    api("io.ktor:ktor-client-okhttp-jvm:2.0.2")
 }
 
 java {
-    val javaVersion = JavaVersion.toVersion(libs.versions.java.get())
+    val javaVersion = JavaVersion.toVersion("11")
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
 }

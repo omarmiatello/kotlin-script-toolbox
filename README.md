@@ -7,13 +7,17 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 Add this in your `build.gradle.ktx` file:
 ```kotlin
 // `core` module (Basic utils + kotlinx.coroutines) + Gson
-implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.4")
 ```
 
 Alternative, only basic support:
 ```kotlin
 // Basic utils + kotlinx.coroutines
-implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.4")
+// core + telegram client
+implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.0.4")
+// core + twitter client
+implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.0.4")
 ```
 
 ## How to use (by examples)
@@ -84,4 +88,40 @@ Result:
 test2-a.json to object: MyExample(p1=test1, p2=null)
 test2-b.json to object: MyExample(p1=test2, p2=3)
 🎉 Test write/read file with objects (serialized as json) - Completed in 42ms
+```
+
+### Send Telegram message (available in `telegram` and `zero-setup`)
+```kotlin
+launchKotlinScriptToolbox(
+    scriptName = "Test Telegram messages",
+) {
+    setupTelegram(
+        apiKey = readSystemProperty("TELEGRAM_BOT_APIKEY"),
+        defaultChatId = readSystemProperty("TELEGRAM_CHAT_ID"),
+    )
+    sendTelegramMessage("My message")
+}
+```
+
+### Send Twitter message (tweet) (available in `twitter` and `zero-setup`)
+```kotlin
+launchKotlinScriptToolbox(
+    scriptName = "Test Twitter messages",
+) {
+    setupTwitter(
+        consumerKey = readSystemProperty("TWITTER_CONSUMER_KEY"),
+        consumerSecret = readSystemProperty("TWITTER_CONSUMER_SECRET"),
+        accessKey = readSystemProperty("TWITTER_ACCESS_KEY"),
+        accessSecret = readSystemProperty("TWITTER_ACCESS_SECRET"),
+    )
+    sendTweet("My tweet")
+}
+```
+
+### Send Telegram/Twitter message (available in `zero-setup`)
+```kotlin
+launchKotlinScriptToolboxZeroSetup {
+    sendTelegramMessage("My message")
+    sendTweet("My tweet")
+}
 ```
