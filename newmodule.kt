@@ -55,9 +55,8 @@ fun main(args: Array<String>) {
             dependenciesPrefix = "module",
         ),
         modules = listOf(
-            LibKotlin(gradleName = "core"),
-            LibKotlin(gradleName = "zero-setup"),
-            LibKotlin(gradleName = "example"),
+            LibKotlin(gradleName = "telegram"),
+            LibKotlin(gradleName = "twitter"),
         ),
         logLevel = 1,
         hasPrompt = false,
