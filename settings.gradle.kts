@@ -22,4 +22,6 @@ enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = "kotlin-script-toolbox"
 include(":core")
 include(":example")
+include(":telegram")
+include(":twitter")
 include(":zero-setup")
