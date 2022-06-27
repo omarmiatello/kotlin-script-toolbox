@@ -10,7 +10,7 @@ plugins {
 
 dependencies {
     api(moduleCore)
-    api("io.ktor:ktor-client-okhttp-jvm:2.0.2")
+    api("io.ktor:ktor-client-okhttp:1.6.8")
     api("com.google.code.gson:gson:2.9.0")
 }
 

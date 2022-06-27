@@ -11,7 +11,7 @@ plugins {
 dependencies {
     api(moduleCore)
     api("com.github.omarmiatello.telegram:client-jvm:6.0")
-    api("io.ktor:ktor-client-okhttp-jvm:2.0.2")
+    api("io.ktor:ktor-client-okhttp:1.6.8")
 }
 
 java {

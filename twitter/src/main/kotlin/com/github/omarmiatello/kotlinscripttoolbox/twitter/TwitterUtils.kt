@@ -4,7 +4,6 @@ import com.github.omarmiatello.kotlinscripttoolbox.core.CacheKey
 import com.github.omarmiatello.kotlinscripttoolbox.core.KotlinScriptToolboxScope
 import com.google.gson.Gson
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
 import okio.ByteString
@@ -61,12 +60,10 @@ val KotlinScriptToolboxScope.twitterHttpClient: HttpClient
     get() = cache.getOrNull(TwitterKey.httpClient) ?: error("Have you run setupTwitter()?")
 
 suspend fun KotlinScriptToolboxScope.sendTweet(text: String) {
-    suspend fun sendTweetMessage(text: String) {
-        println("🐣 --> $text")
-        val response: String = twitterHttpClient.post("https://api.twitter.com/2/tweets") {
-            header("Content-Type", "application/json")
-            setBody(TweetMessage(text).toString())
-        }.body()
-        println("🐥 <-- $response")
+    println("🐣 --> $text")
+    val response: String = twitterHttpClient.post("https://api.twitter.com/2/tweets") {
+        header("Content-Type", "application/json")
+        body = TweetMessage(text).toString()
     }
+    println("🐥 <-- $response")
 }
