@@ -2,6 +2,9 @@ package com.github.omarmiatello.kotlinscripttoolbox.twitter
 
 import com.github.omarmiatello.kotlinscripttoolbox.core.CacheKey
 import com.github.omarmiatello.kotlinscripttoolbox.core.KotlinScriptToolboxScope
+import com.github.omarmiatello.kotlinscripttoolbox.gson.fromJson
+import com.github.omarmiatello.kotlinscripttoolbox.gson.gson
+import com.github.omarmiatello.kotlinscripttoolbox.gson.toJson
 import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -12,11 +15,16 @@ import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-private val gson = Gson()
-
-data class TweetMessage(val text: String) {
-    override fun toString() = gson.toJson(this)
+data class TweetMessage(
+    val text: String,
+    val quote_tweet_id: String? = null,
+) {
+    override fun toString() = toJson()
 }
+data class TweetMessageResponse(
+    val id: String,
+    val text: String,
+)
 
 object TwitterKey {
     val httpClient = CacheKey<HttpClient>()
@@ -59,11 +67,35 @@ fun KotlinScriptToolboxScope.setupTwitter(
 val KotlinScriptToolboxScope.twitterHttpClient: HttpClient
     get() = cache.getOrNull(TwitterKey.httpClient) ?: error("Have you run setupTwitter()?")
 
-suspend fun KotlinScriptToolboxScope.sendTweet(text: String) {
-    println("🐣 --> $text")
-    val response: String = twitterHttpClient.post("https://api.twitter.com/2/tweets") {
-        header("Content-Type", "application/json")
-        body = TweetMessage(text).toString()
-    }
-    println("🐥 <-- $response")
+suspend fun KotlinScriptToolboxScope.sendTweet(
+    text: String,
+    maxMessages: Int = 1,
+) {
+    sendTweets(
+        texts = text.chunked(280).take(maxMessages),
+    )
+}
+
+suspend fun KotlinScriptToolboxScope.sendTweets(
+    texts: List<String>,
+) {
+    var lastTweetId: String? = null
+    texts
+        .map { it.take(280) }
+        .forEach { msg ->
+            println("🐣 --> $msg")
+            val response: String = twitterHttpClient.post("https://api.twitter.com/2/tweets") {
+                header("Content-Type", "application/json")
+                body = TweetMessage(
+                    text = msg,
+                    quote_tweet_id = lastTweetId,
+                ).toString()
+            }
+            try {
+                lastTweetId = response.fromJson<TweetMessageResponse>().id
+            } catch (e: Exception) {
+                println("⚠️ Cannot find the tweet id in $response")
+            }
+            println("🐥 <-- $response")
+        }
 }

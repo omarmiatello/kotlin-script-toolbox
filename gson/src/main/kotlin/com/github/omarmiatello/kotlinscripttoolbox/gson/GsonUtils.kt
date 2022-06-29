@@ -1,14 +1,12 @@
-package com.github.omarmiatello.kotlinscripttoolbox.zerosetup
+package com.github.omarmiatello.kotlinscripttoolbox.gson
 
 import com.github.omarmiatello.kotlinscripttoolbox.core.KotlinScriptToolboxScope
 import com.google.gson.Gson
 
-val _gson = Gson().newBuilder().setPrettyPrinting().create()
+val gson = Gson().newBuilder().setPrettyPrinting().create()
 
-val KotlinScriptToolboxScope.gson: Gson get() = _gson
-
-inline fun <reified T> T.toJson(): String = _gson.toJson(this, T::class.java)
-inline fun <reified T> String.fromJson(): T = _gson.fromJson(this, T::class.java)
+inline fun <reified T> T.toJson(): String = gson.toJson(this, T::class.java)
+inline fun <reified T> String.fromJson(): T = gson.fromJson(this, T::class.java)
 
 inline fun <reified T : Any> KotlinScriptToolboxScope.writeJson(
     pathname: String,

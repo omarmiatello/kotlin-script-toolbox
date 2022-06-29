@@ -26,12 +26,28 @@ val KotlinScriptToolboxScope.telegramDefaultChatId: String
 suspend fun KotlinScriptToolboxScope.sendTelegramMessage(
     text: String,
     chatId: String = telegramDefaultChatId,
+    maxMessages: Int = 1,
 ) {
-    println("💬 ${text.take(4096)}")
-    telegramClient.sendMessage(
-        chat_id = chatId,
-        text = text.take(4096),
-        parse_mode = ParseMode.Markdown,
-        disable_web_page_preview = false
+    sendTelegramMessages(
+        texts = text.chunked(4096).take(maxMessages),
+        chatId = chatId,
     )
+}
+
+suspend fun KotlinScriptToolboxScope.sendTelegramMessages(
+    texts: List<String>,
+    chatId: String = telegramDefaultChatId,
+) {
+    texts
+        .map { it.take(4096) }
+        .forEach { msg ->
+            println("💬 --> $msg")
+            val response = telegramClient.sendMessage(
+                chat_id = chatId,
+                text = msg,
+                parse_mode = ParseMode.Markdown,
+                disable_web_page_preview = false
+            )
+            println("💬 <-- $response")
+        }
 }

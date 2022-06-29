@@ -1,5 +1,5 @@
 version = "0.0.8"
-description = "Kotlin Script Toolbox - Core"
+description = "Kotlin Script Toolbox - Gson Setup"
 
 plugins {
     id("java-library")
@@ -9,7 +9,8 @@ plugins {
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+    api(moduleCore)
+    api("com.google.code.gson:gson:2.9.0")
 }
 
 java {

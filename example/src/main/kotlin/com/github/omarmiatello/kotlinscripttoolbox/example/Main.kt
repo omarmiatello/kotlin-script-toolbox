@@ -1,14 +1,16 @@
 package com.github.omarmiatello.kotlinscripttoolbox.example
 
 import com.github.omarmiatello.kotlinscripttoolbox.core.launchKotlinScriptToolbox
+import com.github.omarmiatello.kotlinscripttoolbox.gson.readJson
+import com.github.omarmiatello.kotlinscripttoolbox.gson.readJsonOrNull
+import com.github.omarmiatello.kotlinscripttoolbox.gson.writeJson
 import com.github.omarmiatello.kotlinscripttoolbox.telegram.sendTelegramMessage
+import com.github.omarmiatello.kotlinscripttoolbox.telegram.sendTelegramMessages
 import com.github.omarmiatello.kotlinscripttoolbox.telegram.setupTelegram
 import com.github.omarmiatello.kotlinscripttoolbox.twitter.sendTweet
+import com.github.omarmiatello.kotlinscripttoolbox.twitter.sendTweets
 import com.github.omarmiatello.kotlinscripttoolbox.twitter.setupTwitter
 import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.launchKotlinScriptToolboxZeroSetup
-import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.readJson
-import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.readJsonOrNull
-import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.writeJson
 
 fun main() {
     launchKotlinScriptToolbox(
@@ -70,6 +72,8 @@ fun main() {
 
     launchKotlinScriptToolboxZeroSetup {
         sendTelegramMessage("My message")
+        sendTelegramMessages(listOf("My message 1", "My message 2"))
         sendTweet("My tweet")
+        sendTweets(listOf("My tweet 1", "My tweet 2"))
     }
 }
