@@ -6,7 +6,7 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 
 Add this in your `build.gradle.ktx` file:
 ```kotlin
-// `core` module (Basic utils + kotlinx.coroutines) + Gson
+// all modules (Basic utils + gson + telegram + ...) + `ZeroSetupScope()`
 implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.1.0")
 ```
 
@@ -131,7 +131,7 @@ launchKotlinScriptToolbox(
 
 ### Set up of multiple scopes with `ZeroSetupScope` (available in `zero-setup`)
 ```kotlin
-launchKotlinScriptToolbox(scope = ZeroSetupScope) {
+launchKotlinScriptToolbox(scope = ZeroSetupScope()) {
     sendTelegramMessage("My message")
     sendTelegramMessages(listOf("My message 1", "My message 2"))
     sendTweet("My tweet")
