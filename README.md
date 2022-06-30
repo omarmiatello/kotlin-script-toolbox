@@ -7,19 +7,19 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 Add this in your `build.gradle.ktx` file:
 ```kotlin
 // `core` module (Basic utils + kotlinx.coroutines) + Gson
-implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.0.8")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.1.0")
 ```
 
 Alternative, only basic support:
 ```kotlin
 // Basic utils + kotlinx.coroutines
-implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.0.8")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.1.0")
 // core + gson utils
-implementation("com.github.omarmiatello.kotlin-script-toolbox:gson:0.0.8")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:gson:0.1.0")
 // core + telegram client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.0.8")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.1.0")
 // core + twitter client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.0.8")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.1.0")
 ```
 
 ## How to use (by examples)
@@ -30,10 +30,12 @@ to launch all examples.
 
 ```kotlin
 launchKotlinScriptToolbox(
+    scope = BaseScope.fromDefaults(),
     scriptName = "Test read System Property",
 ) {
     // system env or 'local.properties'
-    val secretData = readSystemPropertyOrNull("SECRET_DATA")
+    val secretData = readSystemProperty("SECRET_DATA")
+    val secretData2 = readSystemPropertyOrNull("SECRET_DATA_OR_NULL")
     println("System Property 'SECRET_DATA': $secretData")
 }
 ```
@@ -48,8 +50,8 @@ System Property 'SECRET_DATA': this is only for local env. NOTE: this file (loca
 ### Write/read file with text (available in `core` and `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
+    scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
     scriptName = "Test write/read file with text",
-    filepathPrefix = "example-data/"
 ) {
     // files: write text
     writeText("test1.txt", "Ciao")
@@ -69,8 +71,8 @@ test1.txt: Ciao
 ### Write/read file with objects (serialized as json) (available in `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
+    scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
     scriptName = "Test write/read file with objects (serialized as json)",
-    filepathPrefix = "example-data/",
 ) {
     data class MyExample(val p1: String, val p2: Int? = null)
 
@@ -95,12 +97,9 @@ test2-b.json to object: MyExample(p1=test2, p2=3)
 ### Send Telegram message (available in `telegram` and `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
+    scope = TelegramScope.from(apiKey = "my api key", defaultChatIds = listOf("123321")),
     scriptName = "Test Telegram messages",
 ) {
-    setupTelegram(
-        apiKey = readSystemProperty("TELEGRAM_BOT_APIKEY"),
-        defaultChatId = readSystemProperty("TELEGRAM_CHAT_ID"),
-    )
     sendTelegramMessage("My message")
 }
 ```
@@ -108,21 +107,31 @@ launchKotlinScriptToolbox(
 ### Send Twitter message (tweet) (available in `twitter` and `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
+    scope = TwitterScope.fromDefaults(baseScope = BaseScope.fromDefaults()),
     scriptName = "Test Twitter messages",
 ) {
-    setupTwitter(
-        consumerKey = readSystemProperty("TWITTER_CONSUMER_KEY"),
-        consumerSecret = readSystemProperty("TWITTER_CONSUMER_SECRET"),
-        accessKey = readSystemProperty("TWITTER_ACCESS_KEY"),
-        accessSecret = readSystemProperty("TWITTER_ACCESS_SECRET"),
-    )
     sendTweet("My tweet")
 }
 ```
 
-### Send Telegram/Twitter message (available in `zero-setup`)
+### Set up of multiple scopes (available in `zero-setup`)
 ```kotlin
-launchKotlinScriptToolboxZeroSetup {
+val baseScope = object : BaseScope by BaseScope.fromDefaults() {}
+launchKotlinScriptToolbox(
+    scope = object : BaseScope by baseScope,
+        TelegramScope by TelegramScope.fromDefaults(baseScope),
+        TwitterScope by TwitterScope.fromDefaults(baseScope) {},
+) {
+    sendTelegramMessage("My message")
+    sendTelegramMessages(listOf("My message 1", "My message 2"))
+    sendTweet("My tweet")
+    sendTweets(listOf("My tweet 1", "My tweet 2"))
+}
+```
+
+### Set up of multiple scopes with `ZeroSetupScope` (available in `zero-setup`)
+```kotlin
+launchKotlinScriptToolbox(scope = ZeroSetupScope) {
     sendTelegramMessage("My message")
     sendTelegramMessages(listOf("My message 1", "My message 2"))
     sendTweet("My tweet")

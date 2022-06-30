@@ -1,19 +1,17 @@
 package com.github.omarmiatello.kotlinscripttoolbox.example
 
-import com.github.omarmiatello.kotlinscripttoolbox.core.launchKotlinScriptToolbox
+import com.github.omarmiatello.kotlinscripttoolbox.core.*
 import com.github.omarmiatello.kotlinscripttoolbox.gson.readJson
 import com.github.omarmiatello.kotlinscripttoolbox.gson.readJsonOrNull
 import com.github.omarmiatello.kotlinscripttoolbox.gson.writeJson
-import com.github.omarmiatello.kotlinscripttoolbox.telegram.sendTelegramMessage
-import com.github.omarmiatello.kotlinscripttoolbox.telegram.sendTelegramMessages
-import com.github.omarmiatello.kotlinscripttoolbox.telegram.setupTelegram
-import com.github.omarmiatello.kotlinscripttoolbox.twitter.sendTweet
-import com.github.omarmiatello.kotlinscripttoolbox.twitter.sendTweets
-import com.github.omarmiatello.kotlinscripttoolbox.twitter.setupTwitter
-import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.launchKotlinScriptToolboxZeroSetup
+import com.github.omarmiatello.kotlinscripttoolbox.telegram.TelegramScope
+import com.github.omarmiatello.kotlinscripttoolbox.twitter.TwitterScope
+import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.ZeroSetupScope
+
 
 fun main() {
     launchKotlinScriptToolbox(
+        scope = BaseScope.fromDefaults(),
         scriptName = "Test read System Property",
     ) {
         // system env or 'local.properties'
@@ -23,8 +21,8 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
+        scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
         scriptName = "Test write/read file with text",
-        filepathPrefix = "example-data/"
     ) {
         // files: write text
         writeText("test1.txt", "Ciao")
@@ -34,8 +32,8 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
+        scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
         scriptName = "Test write/read file with objects (serialized as json)",
-        filepathPrefix = "example-data/",
     ) {
         data class MyExample(val p1: String, val p2: Int? = null)
 
@@ -49,28 +47,33 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
+        scope = TelegramScope.from(apiKey = "my api key", defaultChatIds = listOf("123321")),
         scriptName = "Test Telegram messages",
     ) {
-        setupTelegram(
-            apiKey = readSystemProperty("TELEGRAM_BOT_APIKEY"),
-            defaultChatId = readSystemProperty("TELEGRAM_CHAT_ID"),
-        )
         sendTelegramMessage("My message")
     }
 
     launchKotlinScriptToolbox(
+        scope = TwitterScope.fromDefaults(baseScope = BaseScope.fromDefaults()),
         scriptName = "Test Twitter messages",
     ) {
-        setupTwitter(
-            consumerKey = readSystemProperty("TWITTER_CONSUMER_KEY"),
-            consumerSecret = readSystemProperty("TWITTER_CONSUMER_SECRET"),
-            accessKey = readSystemProperty("TWITTER_ACCESS_KEY"),
-            accessSecret = readSystemProperty("TWITTER_ACCESS_SECRET"),
-        )
         sendTweet("My tweet")
     }
 
-    launchKotlinScriptToolboxZeroSetup {
+    val baseScope = object : BaseScope by BaseScope.fromDefaults() {}
+    launchKotlinScriptToolbox(
+        scope = object : BaseScope by baseScope,
+            TelegramScope by TelegramScope.fromDefaults(baseScope),
+            TwitterScope by TwitterScope.fromDefaults(baseScope) {},
+        scriptName = "Setup using defaults"
+    ) {
+        sendTelegramMessage("My message")
+        sendTelegramMessages(listOf("My message 1", "My message 2"))
+        sendTweet("My tweet")
+        sendTweets(listOf("My tweet 1", "My tweet 2"))
+    }
+
+    launchKotlinScriptToolbox(ZeroSetupScope()) {
         sendTelegramMessage("My message")
         sendTelegramMessages(listOf("My message 1", "My message 2"))
         sendTweet("My tweet")

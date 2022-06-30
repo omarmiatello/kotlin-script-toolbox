@@ -1,4 +1,4 @@
-version = "0.0.8"
+version = "0.1.0"
 description = "Kotlin Script Toolbox - Zero Setup"
 
 plugins {
@@ -9,9 +9,9 @@ plugins {
 }
 
 dependencies {
+    api(moduleGson)
     api(moduleTelegram)
     api(moduleTwitter)
-    api(moduleGson)
 }
 
 java {
