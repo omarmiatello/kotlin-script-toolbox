@@ -19,18 +19,21 @@ interface TwitterScope : KotlinScriptToolboxScope {
     suspend fun sendTweet(
         text: String,
         maxMessages: Int = 1,
+        ignoreLimit: Boolean = false,
     ) {
         sendTweets(
             texts = text.chunked(MESSAGE_MAX_SIZE).take(maxMessages),
+            ignoreLimit = ignoreLimit,
         )
     }
 
     suspend fun sendTweets(
         texts: List<String>,
+        ignoreLimit: Boolean = false,
     ) {
         var lastTweetId: String? = null
         texts
-            .map { it.take(MESSAGE_MAX_SIZE) }
+            .map { if (ignoreLimit) it else it.take(MESSAGE_MAX_SIZE) }
             .forEach { msg ->
                 println("🐣 --> $msg")
 
@@ -62,6 +65,12 @@ interface TwitterScope : KotlinScriptToolboxScope {
 
     companion object {
         const val MESSAGE_MAX_SIZE = 280
+
+        /**
+         * A URL of any length will be altered to 23 characters, even if the link itself is less than 23 characters long.
+         * Your character count will reflect this. - https://help.twitter.com/en/using-twitter/how-to-tweet-a-link
+         */
+        const val URL_MAX_SIZE = 23
 
         fun fromDefaults(
             baseScope: BaseScope,
