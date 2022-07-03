@@ -20,18 +20,31 @@ interface TwitterScope : KotlinScriptToolboxScope {
         text: String,
         maxMessages: Int = 1,
         ignoreLimit: Boolean = false,
+        tweetMessageRequest: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
+            TweetMessageRequest(
+                text = msg,
+                reply = lastTweet?.let { TweetReply(it.data.id) },
+            )
+        },
     ) {
         sendTweets(
             texts = text.chunked(MESSAGE_MAX_SIZE).take(maxMessages),
             ignoreLimit = ignoreLimit,
+            tweetMessageRequest = tweetMessageRequest,
         )
     }
 
     suspend fun sendTweets(
         texts: List<String>,
         ignoreLimit: Boolean = false,
+        tweetMessageRequest: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
+            TweetMessageRequest(
+                text = msg,
+                reply = lastTweet?.let { TweetReply(it.data.id) },
+            )
+        },
     ) {
-        var lastTweetId: String? = null
+        var lastTweet: TweetMessageResponse? = null
         texts
             .map { if (ignoreLimit) it else it.take(MESSAGE_MAX_SIZE) }
             .forEach { msg ->
@@ -41,11 +54,7 @@ interface TwitterScope : KotlinScriptToolboxScope {
                     Request.Builder()
                         .url("https://api.twitter.com/2/tweets")
                         .post(
-                            TweetMessageRequest(
-                                text = msg,
-                                quote_tweet_id = lastTweetId,
-                            )
-                                .toString()
+                            tweetMessageRequest(msg, lastTweet).toString()
                                 .toRequestBody("application/json".toMediaType())
                         )
                         .build()
@@ -55,12 +64,34 @@ interface TwitterScope : KotlinScriptToolboxScope {
                     ?.string()
 
                 try {
-                    lastTweetId = response!!.fromJson<TweetMessageResponse>().id
+                    lastTweet = response!!.fromJson<TweetMessageResponse>().takeIf { it.data.id.isNotEmpty() }
                 } catch (e: Exception) {
-                    println("⚠️ Cannot find the tweet id in $response")
+                    println("⚠️ Cannot parse $response")
                 }
-                println("🐥 <-- $response")
+                println("🐥 <-- id: ${lastTweet?.data?.id}: $response")
             }
+    }
+
+    suspend fun deleteTweet(id: String): Boolean {
+        println("💀 --> DELETE $id")
+        val response: String? = twitterHttpClient.newCall(
+            Request.Builder()
+                .url("https://api.twitter.com/2/tweets/$id")
+                .delete()
+                .build()
+        )
+            .execute()
+            .body
+            ?.string()
+
+        val res = try {
+            response!!.fromJson<TweetDeleteResponse>().takeIf { it.data.deleted }
+        } catch (e: Exception) {
+            println("⚠️ Cannot parse $response")
+            null
+        }
+        println("☠️ <-- DELETE $id? ${res?.data?.deleted} $response")
+        return res?.data?.deleted ?: false
     }
 
     companion object {
