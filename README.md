@@ -7,19 +7,19 @@ Kotlin Script Toolbox is a library for handling common operations with Kotlin Sc
 Add this in your `build.gradle.ktx` file:
 ```kotlin
 // all modules (Basic utils + gson + telegram + ...) + `ZeroSetupScope()`
-implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.1.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:zero-setup:0.1.4")
 ```
 
 Alternative, only basic support:
 ```kotlin
 // Basic utils + kotlinx.coroutines
-implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.1.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:core:0.1.4")
 // core + gson utils
-implementation("com.github.omarmiatello.kotlin-script-toolbox:gson:0.1.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:gson:0.1.4")
 // core + telegram client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.1.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:telegram:0.1.4")
 // core + twitter client
-implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.1.3")
+implementation("com.github.omarmiatello.kotlin-script-toolbox:twitter:0.1.4")
 ```
 
 ## How to use (by examples)
@@ -30,7 +30,7 @@ to launch all examples.
 
 ```kotlin
 launchKotlinScriptToolbox(
-    scope = BaseScope.fromDefaults(),
+    scope = BaseScope.from(),
     scriptName = "Test read System Property",
 ) {
     // system env or 'local.properties'
@@ -50,7 +50,7 @@ System Property 'SECRET_DATA': this is only for local env. NOTE: this file (loca
 ### Write/read file with text (available in `core` and `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
-    scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
+    scope = BaseScope.from(filepathPrefix = "example-data/"),
     scriptName = "Test write/read file with text",
 ) {
     // files: write text
@@ -71,7 +71,7 @@ test1.txt: Ciao
 ### Write/read file with objects (serialized as json) (available in `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
-    scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
+    scope = BaseScope.from(filepathPrefix = "example-data/"),
     scriptName = "Test write/read file with objects (serialized as json)",
 ) {
     data class MyExample(val p1: String, val p2: Int? = null)
@@ -107,7 +107,7 @@ launchKotlinScriptToolbox(
 ### Send Twitter message (tweet) (available in `twitter` and `zero-setup`)
 ```kotlin
 launchKotlinScriptToolbox(
-    scope = TwitterScope.fromDefaults(baseScope = BaseScope.fromDefaults()),
+    scope = TwitterScope.from(baseScope = BaseScope.from()),
     scriptName = "Test Twitter messages",
 ) {
     sendTweet("My tweet")
@@ -116,11 +116,11 @@ launchKotlinScriptToolbox(
 
 ### Set up of multiple scopes (available in `zero-setup`)
 ```kotlin
-val baseScope = object : BaseScope by BaseScope.fromDefaults() {}
+val baseScope = BaseScope.from()
 launchKotlinScriptToolbox(
     scope = object : BaseScope by baseScope,
-        TelegramScope by TelegramScope.fromDefaults(baseScope),
-        TwitterScope by TwitterScope.fromDefaults(baseScope) {},
+        TelegramScope by TelegramScope.from(baseScope),
+        TwitterScope by TwitterScope.from(baseScope) {},
 ) {
     sendTelegramMessage("My message")
     sendTelegramMessages(listOf("My message 1", "My message 2"))

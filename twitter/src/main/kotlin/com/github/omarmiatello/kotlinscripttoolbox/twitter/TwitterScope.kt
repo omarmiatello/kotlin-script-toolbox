@@ -103,7 +103,7 @@ interface TwitterScope : KotlinScriptToolboxScope {
          */
         const val URL_MAX_SIZE = 23
 
-        fun fromDefaults(
+        fun from(
             baseScope: BaseScope,
             consumerKey: String = baseScope.readSystemProperty("TWITTER_CONSUMER_KEY"),
             consumerSecret: String = baseScope.readSystemProperty("TWITTER_CONSUMER_SECRET"),

@@ -5,9 +5,9 @@ import com.github.omarmiatello.kotlinscripttoolbox.telegram.TelegramScope
 import com.github.omarmiatello.kotlinscripttoolbox.twitter.TwitterScope
 
 open class ZeroSetupScope(
-    baseScope: BaseScope = BaseScope.fromDefaults(),
-    telegramScope: TelegramScope = TelegramScope.fromDefaults(baseScope),
-    twitterScope: TwitterScope = TwitterScope.fromDefaults(baseScope),
+    baseScope: BaseScope = BaseScope.from(),
+    telegramScope: TelegramScope = TelegramScope.from(baseScope),
+    twitterScope: TwitterScope = TwitterScope.from(baseScope),
 ) : BaseScope by baseScope,
     TelegramScope by telegramScope,
     TwitterScope by twitterScope

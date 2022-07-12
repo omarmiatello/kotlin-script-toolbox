@@ -31,7 +31,7 @@ interface BaseScope : KotlinScriptToolboxScope {
             ?: error("File not found: $pathname")
 
     companion object {
-        fun fromDefaults(
+        fun from(
             filepathPrefix: String = "",
             filepathLocalProperties: String = "local.properties",
             cache: Cache = Cache(),

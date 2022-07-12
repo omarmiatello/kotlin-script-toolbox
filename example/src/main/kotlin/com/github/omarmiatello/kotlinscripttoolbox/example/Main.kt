@@ -11,7 +11,7 @@ import com.github.omarmiatello.kotlinscripttoolbox.zerosetup.ZeroSetupScope
 
 fun main() {
     launchKotlinScriptToolbox(
-        scope = BaseScope.fromDefaults(),
+        scope = BaseScope.from(),
         scriptName = "Test read System Property",
     ) {
         // system env or 'local.properties'
@@ -21,7 +21,7 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
-        scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
+        scope = BaseScope.from(filepathPrefix = "example-data/"),
         scriptName = "Test write/read file with text",
     ) {
         // files: write text
@@ -32,7 +32,7 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
-        scope = BaseScope.fromDefaults(filepathPrefix = "example-data/"),
+        scope = BaseScope.from(filepathPrefix = "example-data/"),
         scriptName = "Test write/read file with objects (serialized as json)",
     ) {
         data class MyExample(val p1: String, val p2: Int? = null)
@@ -54,17 +54,17 @@ fun main() {
     }
 
     launchKotlinScriptToolbox(
-        scope = TwitterScope.fromDefaults(baseScope = BaseScope.fromDefaults()),
+        scope = TwitterScope.from(baseScope = BaseScope.from()),
         scriptName = "Test Twitter messages",
     ) {
         sendTweet("My tweet")
     }
 
-    val baseScope = object : BaseScope by BaseScope.fromDefaults() {}
+    val baseScope = BaseScope.from()
     launchKotlinScriptToolbox(
         scope = object : BaseScope by baseScope,
-            TelegramScope by TelegramScope.fromDefaults(baseScope),
-            TwitterScope by TwitterScope.fromDefaults(baseScope) {},
+            TelegramScope by TelegramScope.from(baseScope),
+            TwitterScope by TwitterScope.from(baseScope) {},
         scriptName = "Setup using defaults"
     ) {
         sendTelegramMessage("My message")

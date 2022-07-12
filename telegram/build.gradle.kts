@@ -1,4 +1,4 @@
-version = "0.1.3"
+version = "0.1.4"
 description = "Kotlin Script Toolbox - Telegram Setup"
 
 plugins {
@@ -10,7 +10,7 @@ plugins {
 
 dependencies {
     api(moduleCore)
-    api("com.github.omarmiatello.telegram:client-jvm:6.0")
+    api("com.github.omarmiatello.telegram:client-jvm:6.0.1")
     api("io.ktor:ktor-client-okhttp:1.6.8")
 }
 

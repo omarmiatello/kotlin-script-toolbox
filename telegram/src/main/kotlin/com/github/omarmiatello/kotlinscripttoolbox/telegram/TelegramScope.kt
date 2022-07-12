@@ -48,7 +48,7 @@ interface TelegramScope : KotlinScriptToolboxScope {
     companion object {
         const val MESSAGE_MAX_SIZE = 4096
 
-        fun fromDefaults(
+        fun from(
             baseScope: BaseScope,
             apiKey: String = baseScope.readSystemProperty("TELEGRAM_BOT_APIKEY"),
             defaultChatIds: List<String> = baseScope.readSystemProperty("TELEGRAM_CHAT_ID_LIST")
