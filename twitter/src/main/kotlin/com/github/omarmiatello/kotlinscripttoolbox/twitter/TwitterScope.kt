@@ -2,6 +2,7 @@ package com.github.omarmiatello.kotlinscripttoolbox.twitter
 
 import com.github.omarmiatello.kotlinscripttoolbox.core.BaseScope
 import com.github.omarmiatello.kotlinscripttoolbox.core.KotlinScriptToolboxScope
+import com.github.omarmiatello.kotlinscripttoolbox.core.Messages
 import com.github.omarmiatello.kotlinscripttoolbox.gson.fromJson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -16,28 +17,10 @@ import javax.crypto.spec.SecretKeySpec
 interface TwitterScope : KotlinScriptToolboxScope {
     val twitterHttpClient: OkHttpClient
 
-    suspend fun sendTweet(
-        text: String,
-        maxMessages: Int = 1,
-        ignoreLimit: Boolean = false,
-        tweetMessageRequest: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
-            TweetMessageRequest(
-                text = msg,
-                reply = lastTweet?.let { TweetReply(it.data.id) },
-            )
-        },
-    ) {
-        sendTweets(
-            texts = text.chunked(MESSAGE_MAX_SIZE).take(maxMessages),
-            ignoreLimit = ignoreLimit,
-            tweetMessageRequest = tweetMessageRequest,
-        )
-    }
-
     suspend fun sendTweets(
         texts: List<String>,
         ignoreLimit: Boolean = false,
-        tweetMessageRequest: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
+        request: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
             TweetMessageRequest(
                 text = msg,
                 reply = lastTweet?.let { TweetReply(it.data.id) },
@@ -54,7 +37,7 @@ interface TwitterScope : KotlinScriptToolboxScope {
                     Request.Builder()
                         .url("https://api.twitter.com/2/tweets")
                         .post(
-                            tweetMessageRequest(msg, lastTweet).toString()
+                            request(msg, lastTweet).toString()
                                 .toRequestBody("application/json".toMediaType())
                         )
                         .build()
@@ -71,6 +54,36 @@ interface TwitterScope : KotlinScriptToolboxScope {
                 println("🐥 <-- id: ${lastTweet?.data?.id}: $response")
             }
     }
+
+    suspend fun sendTweet(
+        text: String,
+        maxMessages: Int = 1,
+        ignoreLimit: Boolean = false,
+        request: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
+            TweetMessageRequest(
+                text = msg,
+                reply = lastTweet?.let { TweetReply(it.data.id) },
+            )
+        },
+    ) = sendTweets(
+        texts = text.chunked(MESSAGE_MAX_SIZE).take(maxMessages),
+        ignoreLimit = ignoreLimit,
+        request = request,
+    )
+
+    suspend fun sendTweets(
+        messages: Messages,
+        request: (String, TweetMessageResponse?) -> TweetMessageRequest = { msg, lastTweet ->
+            TweetMessageRequest(
+                text = msg,
+                reply = lastTweet?.let { TweetReply(it.data.id) },
+            )
+        },
+    ) = sendTweets(
+        texts = messages.toStrings(MESSAGE_MAX_SIZE),
+        ignoreLimit = true,
+        request = request,
+    )
 
     suspend fun deleteTweet(id: String): Boolean {
         println("💀 --> DELETE $id")

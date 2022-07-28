@@ -1,4 +1,4 @@
-version = "0.1.4"
+version = "0.1.5"
 description = "Kotlin Script Toolbox - Core"
 
 plugins {
@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+    testImplementation("junit:junit:4.13")
 }
 
 java {
